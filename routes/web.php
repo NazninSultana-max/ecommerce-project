@@ -10,11 +10,34 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+require 'admin.php';
+
+Auth::routes();
+Route::group(['prefix'  =>  'admin'], function () {
+ 
+    Route::get('login', 'Admin\LoginController@showLoginForm')->name('admin.login');
+    Route::post('login', 'Admin\LoginController@login')->name('admin.login.post');
+    Route::get('logout', 'Admin\LoginController@logout')->name('admin.logout');
+ 
+    Route::group(['middleware' => ['auth:admin']], function () {
+ 
+        Route::get('/', function () {
+            return view('admin.dashboard.index');
+        })->name('admin.dashboard');
+ 
+    });
+});
+
+
+
+
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::view('/admin', 'admin.dashboard.index');
+// Route::view('/admin', 'admin.dashboard.index');
+
+    
 Route::view('/blank', 'admin.dashboard.blank_page');
 Route::view('/boot', 'admin.dashboard.bootstrap');
 Route::view('/charts', 'admin.dashboard.charts');
